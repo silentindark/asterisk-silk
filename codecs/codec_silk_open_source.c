@@ -445,7 +445,7 @@ static int load_module(void)
 	int res = 0;
 
 	/* print the skype version */
-	ast_log(LOG_NOTICE, "SILK %s\n", SKP_Silk_SDK_get_version());
+	ast_debug(2, "SILK %s\n", SKP_Silk_SDK_get_version());
 
 	/* get the encoder / decoder sizes */
 	ret = SKP_Silk_SDK_Get_Encoder_Size(&encSizeBytes);
@@ -477,7 +477,7 @@ static int load_module(void)
 static int unload_module(void)
 {
 	int res = 0;
-	ast_log(LOG_NOTICE, "Silk Coder/Encoder unloading\n");
+	ast_debug(2, "Silk Coder/Encoder unloading\n");
 
 	res |= ast_unregister_translator(&lintosilk8);
 	res |= ast_unregister_translator(&silk8tolin);
