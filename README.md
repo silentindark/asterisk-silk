@@ -4,7 +4,7 @@ To add a codec for SIP/SDP (m=, rtmap, and ftmp), you create a format module in 
 
 The ZIP file for SILK contains the latest RTP payload-format description in the folder `doc`. This repository here is an wrapper implementation of that document. SILK is [deprecated](http://blogs.skype.com/2012/09/12/skype-and-a-new-audio-codec/) since September 2012 because its work continues within the [Opus Codec](http://tools.ietf.org/html/rfc7587) in the mode Linear Prediction ([LP](http://wiki.xiph.org/OpusFAQ#Is_the_SILK_part_of_Opus_compatible_with_the_SILK_implementation_shipped_in_Skype.3F)). Nevertheless, you are here because you have a VoIP client which does not support Opus yet but still supports SILK. Or you want to learn more about SILK because it is one foundation of Opus. Research papers comparing SILK with other audio codecs: InterSpeech [2010](http://research.nokia.com/files/public/%5B12%5D_Interspeech%202010_Voice%20Quality%20Evaluation%20of%20Recent%20Open%20Source%20Codecs.pdf) and [2011](http://research.nokia.com/files/public/%5B16%5D_InterSpeech2011_Voice_Quality_Characterization_of_IETF_Opus_Codec.pdf). Further [examples…](http://www.opus-codec.org/examples/)
 
-Since Asterisk 13.12 (and Asterisk 14.0.1), SILK is not only supported for pass-through but can be transcoded as well. This allows you to translate to/from other audio codecs like those for landline telephones (ISDN: G.711; DECT: G.726-32; and HD: G.722) or mobile phones (GSM, AMR, AMR-WB, 3GPP EVS). This can be achieved by
+Since Asterisk 13.12, SILK is not only supported for pass-through but can be transcoded as well. This allows you to translate to/from other audio codecs like those for landline telephones (ISDN: G.711; DECT: G.726-32; and HD: G.722) or mobile phones (GSM, AMR, AMR-WB, 3GPP EVS). This can be achieved by
 
 A. enabling `codec_silk` via `make menuselect`, or
 
@@ -18,7 +18,7 @@ This repository is for Asterisk 13 and newer. If you still use Asterisk 11, pl
 
 ## Installing the patch
 
-At least Asterisk 13.7 is required. These changes were last tested with Asterisk 13.12 (and Asterisk 14.1). If you use a newer version and transcoding fails, please, [report](https://help.github.com/articles/creating-an-issue/)!
+At least Asterisk 13.7 is required. These changes were last tested with Asterisk 13.18 (and Asterisk 15.1). If you use a newer version and transcoding fails, please, [report](https://help.github.com/articles/creating-an-issue/)!
 
     cd /usr/src/
     wget downloads.asterisk.org/pub/telephony/asterisk/asterisk-13-current.tar.gz
@@ -37,13 +37,23 @@ If you do not want transcoding but pass-through only (because of license issues)
     sudo cp ./interface/*.h /usr/include/
     sudo cp ./libSKP_SILK_SDK.a /usr/lib/
 
-Preparations (required since Asterisk 13.12)
+Preparations (required since Asterisk 13.18; undo the video-codec VP9)
+
+    cd /usr/src/asterisk*
+    wget www.traud.de/voip/sip/patches/24bb5a89089caca8e16989bab7458617b91e4ef4.patch
+    patch -p1 --reverse <./24bb5a89089caca8e16989bab7458617b91e4ef4.patch
+
+Preparations (required since Asterisk 13.12; undo the changes for the Digium module)
 
     cd /usr/src/asterisk*
     wget github.com/asterisk/asterisk/commit/f6821fbaec3fed7bbc1c814de3a4824cc926a90d.patch
     patch -p1 --reverse <./f6821fbaec3fed7bbc1c814de3a4824cc926a90d.patch
     wget github.com/asterisk/asterisk/commit/28501051b47e6bb8968bb016abf0b3493c05fa21.patch
     patch -p1 --reverse <./28501051b47e6bb8968bb016abf0b3493c05fa21.patch
+
+Preparations (required since Asterisk 13.18; redo the video-codec VP9)
+
+    patch -p1 <./24bb5a89089caca8e16989bab7458617b91e4ef4.patch
 
 Apply all patches:
 
